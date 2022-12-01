@@ -2,13 +2,14 @@ from aiogram import Bot, types
 from aiogram.dispatcher import Dispatcher
 from aiogram.utils import executor
 from keyboards.mainboard import mainboard
-from keyboards.sizeboard import sizeboard
+from keyboards.sizeboard import sizeboard_shoez, sizeboard_cloath
 from keyboards.adminboard import adminboard
 from database.database import *
 from aiogram.contrib.fsm_storage.memory import MemoryStorage
 from aiogram.dispatcher import FSMContext
-from states.ads_states import NewClothes, NewShoes
+from states.ads_states import NewClothes, NewShoes, DeleteAd
 from random import randint
+from util import writer_data
 
 from config import TOKEN
 
@@ -39,101 +40,289 @@ async def get_id(message: types.Message):
 @dp.message_handler()
 async def echo_message(msg: types.Message):
     if msg.text == '👕 Одежда 👕':
-        await bot.send_message(msg.from_user.id, "Отлично!\n\nТеперь определимся с размером: ", reply_markup=sizeboard)
+        await bot.send_message(msg.from_user.id, "Отлично!\n\nТеперь определимся с размером: ",
+                               reply_markup=sizeboard_cloath)
         update_type(1, msg.from_user.id)
     elif msg.text == '👟 Обувь 👟':
-        await bot.send_message(msg.from_user.id, "Отлично!\n\nТеперь определимся с размером: ", reply_markup=sizeboard)
+        await bot.send_message(msg.from_user.id, "Отлично!\n\nТеперь определимся с размером: ",
+                               reply_markup=sizeboard_shoez)
         update_type(2, msg.from_user.id)
     elif msg.text == 'XS':
         update_size(msg.text, msg.from_user.id)
         data = get_user_data(msg.from_user.id)
+
         if data[0] == 1:
+            writer_data("Одежда", data[1])
             ads = show_ads_clothes(data[1])
             for ad in ads:
                 photo = open(ad[4], 'rb')
                 await bot.send_photo(msg.from_user.id, photo,
                                      caption=f"{ad[0]}\n\n{ad[2]}\n\nРазмер: {ad[1]}\n\nДля покупки: {ad[3]}")
-        else:
-            ads = show_ads_shoes(data[1])
-            for ad in ads:
-                photo = open(ad[4], 'rb')
-                await bot.send_photo(msg.from_user.id, photo,
-                                     caption=f"{ad[0]}\n\n{ad[2]}\n\nРазмер: {ad[1]}\n\nДля покупки: {ad[3]}")
+
     elif msg.text == 'S':
         update_size(msg.text, msg.from_user.id)
         data = get_user_data(msg.from_user.id)
         if data[0] == 1:
+            writer_data("Одежда", data[1])
             ads = show_ads_clothes(data[1])
             for ad in ads:
                 photo = open(ad[4], 'rb')
                 await bot.send_photo(msg.from_user.id, photo,
                                      caption=f"{ad[0]}\n\n{ad[2]}\n\nРазмер: {ad[1]}\n\nДля покупки: {ad[3]}")
-        else:
-            ads = show_ads_shoes(data[1])
-            for ad in ads:
-                photo = open(ad[4], 'rb')
-                await bot.send_photo(msg.from_user.id, photo,
-                                     caption=f"{ad[0]}\n\n{ad[2]}\n\nРазмер: {ad[1]}\n\nДля покупки: {ad[3]}")
+
     elif msg.text == 'L':
         update_size(msg.text, msg.from_user.id)
         data = get_user_data(msg.from_user.id)
         if data[0] == 1:
+            writer_data("Одежда", data[1])
             ads = show_ads_clothes(data[1])
             for ad in ads:
                 photo = open(ad[4], 'rb')
                 await bot.send_photo(msg.from_user.id, photo,
                                      caption=f"{ad[0]}\n\n{ad[2]}\n\nРазмер: {ad[1]}\n\nДля покупки: {ad[3]}")
-        else:
-            ads = show_ads_shoes(data[1])
-            for ad in ads:
-                photo = open(ad[4], 'rb')
-                await bot.send_photo(msg.from_user.id, photo,
-                                     caption=f"{ad[0]}\n\n{ad[2]}\n\nРазмер: {ad[1]}\n\nДля покупки: {ad[3]}")
+
     elif msg.text == 'M':
         update_size(msg.text, msg.from_user.id)
         data = get_user_data(msg.from_user.id)
         if data[0] == 1:
+            writer_data("Одежда", data[1])
             ads = show_ads_clothes(data[1])
             for ad in ads:
                 photo = open(ad[4], 'rb')
                 await bot.send_photo(msg.from_user.id, photo,
                                      caption=f"{ad[0]}\n\n{ad[2]}\n\nРазмер: {ad[1]}\n\nДля покупки: {ad[3]}")
-        else:
-            ads = show_ads_shoes(data[1])
-            for ad in ads:
-                photo = open(ad[4], 'rb')
-                await bot.send_photo(msg.from_user.id, photo,
-                                     caption=f"{ad[0]}\n\n{ad[2]}\n\nРазмер: {ad[1]}\n\nДля покупки: {ad[3]}")
+
     elif msg.text == 'XL':
         update_size(msg.text, msg.from_user.id)
         data = get_user_data(msg.from_user.id)
         if data[0] == 1:
+            writer_data("Одежда", data[1])
             ads = show_ads_clothes(data[1])
             for ad in ads:
                 photo = open(ad[4], 'rb')
                 await bot.send_photo(msg.from_user.id, photo,
                                      caption=f"{ad[0]}\n\n{ad[2]}\n\nРазмер: {ad[1]}\n\nДля покупки: {ad[3]}")
-        else:
-            ads = show_ads_shoes(data[1])
-            for ad in ads:
-                photo = open(ad[4], 'rb')
-                await bot.send_photo(msg.from_user.id, photo,
-                                     caption=f"{ad[0]}\n\n{ad[2]}\n\nРазмер: {ad[1]}\n\nДля покупки: {ad[3]}")
+
     elif msg.text == 'XXL':
         update_size(msg.text, msg.from_user.id)
         data = get_user_data(msg.from_user.id)
         if data[0] == 1:
+            writer_data("Одежда", data[1])
             ads = show_ads_clothes(data[1])
             for ad in ads:
                 photo = open(ad[4], 'rb')
                 await bot.send_photo(msg.from_user.id, photo,
                                      caption=f"{ad[0]}\n\n{ad[2]}\n\nРазмер: {ad[1]}\n\nДля покупки: {ad[3]}")
-        else:
+
+    elif msg.text == '36.5':
+        update_size(msg.text, msg.from_user.id)
+        data = get_user_data(msg.from_user.id)
+        if data[0] == 2:
+            writer_data("Обувь", data[1])
             ads = show_ads_shoes(data[1])
             for ad in ads:
                 photo = open(ad[4], 'rb')
                 await bot.send_photo(msg.from_user.id, photo,
                                      caption=f"{ad[0]}\n\n{ad[2]}\n\nРазмер: {ad[1]}\n\nДля покупки: {ad[3]}")
+
+    elif msg.text == '37':
+        update_size(msg.text, msg.from_user.id)
+        data = get_user_data(msg.from_user.id)
+        if data[0] == 2:
+            writer_data("Обувь", data[1])
+            ads = show_ads_shoes(data[1])
+            for ad in ads:
+                photo = open(ad[4], 'rb')
+                await bot.send_photo(msg.from_user.id, photo,
+                                     caption=f"{ad[0]}\n\n{ad[2]}\n\nРазмер: {ad[1]}\n\nДля покупки: {ad[3]}")
+    elif msg.text == '38':
+        update_size(msg.text, msg.from_user.id)
+        data = get_user_data(msg.from_user.id)
+        if data[0] == 2:
+            writer_data("Обувь", data[1])
+            ads = show_ads_shoes(data[1])
+            for ad in ads:
+                photo = open(ad[4], 'rb')
+                await bot.send_photo(msg.from_user.id, photo,
+                                     caption=f"{ad[0]}\n\n{ad[2]}\n\nРазмер: {ad[1]}\n\nДля покупки: {ad[3]}")
+
+    elif msg.text == '38.5':
+        update_size(msg.text, msg.from_user.id)
+        data = get_user_data(msg.from_user.id)
+        if data[0] == 2:
+            writer_data("Обувь", data[1])
+            ads = show_ads_shoes(data[1])
+            for ad in ads:
+                photo = open(ad[4], 'rb')
+                await bot.send_photo(msg.from_user.id, photo,
+                                     caption=f"{ad[0]}\n\n{ad[2]}\n\nРазмер: {ad[1]}\n\nДля покупки: {ad[3]}")
+
+
+    elif msg.text == '39':
+        update_size(msg.text, msg.from_user.id)
+        data = get_user_data(msg.from_user.id)
+        if data[0] == 2:
+            writer_data("Обувь", data[1])
+            ads = show_ads_shoes(data[1])
+            for ad in ads:
+                photo = open(ad[4], 'rb')
+                await bot.send_photo(msg.from_user.id, photo,
+                                     caption=f"{ad[0]}\n\n{ad[2]}\n\nРазмер: {ad[1]}\n\nДля покупки: {ad[3]}")
+
+
+    elif msg.text == '40':
+        update_size(msg.text, msg.from_user.id)
+        data = get_user_data(msg.from_user.id)
+        if data[0] == 2:
+            writer_data("Обувь", data[1])
+            ads = show_ads_shoes(data[1])
+            for ad in ads:
+                photo = open(ad[4], 'rb')
+                await bot.send_photo(msg.from_user.id, photo,
+                                     caption=f"{ad[0]}\n\n{ad[2]}\n\nРазмер: {ad[1]}\n\nДля покупки: {ad[3]}")
+
+
+    elif msg.text == '40.5':
+        update_size(msg.text, msg.from_user.id)
+        data = get_user_data(msg.from_user.id)
+        if data[0] == 2:
+            writer_data("Обувь", data[1])
+            ads = show_ads_shoes(data[1])
+            for ad in ads:
+                photo = open(ad[4], 'rb')
+                await bot.send_photo(msg.from_user.id, photo,
+                                     caption=f"{ad[0]}\n\n{ad[2]}\n\nРазмер: {ad[1]}\n\nДля покупки: {ad[3]}")
+
+
+    elif msg.text == '41':
+        update_size(msg.text, msg.from_user.id)
+        data = get_user_data(msg.from_user.id)
+        if data[0] == 2:
+            writer_data("Обувь", data[1])
+            ads = show_ads_shoes(data[1])
+            for ad in ads:
+                photo = open(ad[4], 'rb')
+                await bot.send_photo(msg.from_user.id, photo,
+                                     caption=f"{ad[0]}\n\n{ad[2]}\n\nРазмер: {ad[1]}\n\nДля покупки: {ad[3]}")
+
+
+    elif msg.text == '42':
+        update_size(msg.text, msg.from_user.id)
+        data = get_user_data(msg.from_user.id)
+        if data[0] == 2:
+            writer_data("Обувь", data[1])
+            ads = show_ads_shoes(data[1])
+            for ad in ads:
+                photo = open(ad[4], 'rb')
+                await bot.send_photo(msg.from_user.id, photo,
+                                     caption=f"{ad[0]}\n\n{ad[2]}\n\nРазмер: {ad[1]}\n\nДля покупки: {ad[3]}")
+
+    elif msg.text == '42.5':
+        update_size(msg.text, msg.from_user.id)
+        data = get_user_data(msg.from_user.id)
+        if data[0] == 2:
+            writer_data("Обувь", data[1])
+            ads = show_ads_shoes(data[1])
+            for ad in ads:
+                photo = open(ad[4], 'rb')
+                await bot.send_photo(msg.from_user.id, photo,
+                                     caption=f"{ad[0]}\n\n{ad[2]}\n\nРазмер: {ad[1]}\n\nДля покупки: {ad[3]}")
+
+    elif msg.text == '43':
+        update_size(msg.text, msg.from_user.id)
+        data = get_user_data(msg.from_user.id)
+        if data[0] == 2:
+            writer_data("Обувь", data[1])
+            ads = show_ads_shoes(data[1])
+            for ad in ads:
+                photo = open(ad[4], 'rb')
+                await bot.send_photo(msg.from_user.id, photo,
+                                     caption=f"{ad[0]}\n\n{ad[2]}\n\nРазмер: {ad[1]}\n\nДля покупки: {ad[3]}")
+
+
+    elif msg.text == '44':
+        update_size(msg.text, msg.from_user.id)
+        data = get_user_data(msg.from_user.id)
+        if data[0] == 2:
+            writer_data("Обувь", data[1])
+            ads = show_ads_shoes(data[1])
+            for ad in ads:
+                photo = open(ad[4], 'rb')
+                await bot.send_photo(msg.from_user.id, photo,
+                                     caption=f"{ad[0]}\n\n{ad[2]}\n\nРазмер: {ad[1]}\n\nДля покупки: {ad[3]}")
+
+
+    elif msg.text == '44.5':
+        update_size(msg.text, msg.from_user.id)
+        data = get_user_data(msg.from_user.id)
+        if data[0] == 2:
+            writer_data("Обувь", data[1])
+            ads = show_ads_shoes(data[1])
+            for ad in ads:
+                photo = open(ad[4], 'rb')
+                await bot.send_photo(msg.from_user.id, photo,
+                                     caption=f"{ad[0]}\n\n{ad[2]}\n\nРазмер: {ad[1]}\n\nДля покупки: {ad[3]}")
+
+
+    elif msg.text == '45':
+        update_size(msg.text, msg.from_user.id)
+        data = get_user_data(msg.from_user.id)
+        if data[0] == 2:
+            writer_data("Обувь", data[1])
+            ads = show_ads_shoes(data[1])
+            for ad in ads:
+                photo = open(ad[4], 'rb')
+                await bot.send_photo(msg.from_user.id, photo,
+                                     caption=f"{ad[0]}\n\n{ad[2]}\n\nРазмер: {ad[1]}\n\nДля покупки: {ad[3]}")
+
+
+    elif msg.text == '46':
+        update_size(msg.text, msg.from_user.id)
+        data = get_user_data(msg.from_user.id)
+        if data[0] == 2:
+            writer_data("Обувь", data[1])
+            ads = show_ads_shoes(data[1])
+            for ad in ads:
+                photo = open(ad[4], 'rb')
+                await bot.send_photo(msg.from_user.id, photo,
+                                     caption=f"{ad[0]}\n\n{ad[2]}\n\nРазмер: {ad[1]}\n\nДля покупки: {ad[3]}")
+
+
+    elif msg.text == '46.5':
+        update_size(msg.text, msg.from_user.id)
+        data = get_user_data(msg.from_user.id)
+        if data[0] == 2:
+            writer_data("Обувь", data[1])
+            ads = show_ads_shoes(data[1])
+            for ad in ads:
+                photo = open(ad[4], 'rb')
+                await bot.send_photo(msg.from_user.id, photo,
+                                     caption=f"{ad[0]}\n\n{ad[2]}\n\nРазмер: {ad[1]}\n\nДля покупки: {ad[3]}")
+
+
+    elif msg.text == '47':
+        update_size(msg.text, msg.from_user.id)
+        data = get_user_data(msg.from_user.id)
+        if data[0] == 2:
+            writer_data("Обувь", data[1])
+            ads = show_ads_shoes(data[1])
+            for ad in ads:
+                photo = open(ad[4], 'rb')
+                await bot.send_photo(msg.from_user.id, photo,
+                                     caption=f"{ad[0]}\n\n{ad[2]}\n\nРазмер: {ad[1]}\n\nДля покупки: {ad[3]}")
+
+
+    elif msg.text == '48':
+        update_size(msg.text, msg.from_user.id)
+        data = get_user_data(msg.from_user.id)
+        if data[0] == 2:
+            writer_data("Обувь", data[1])
+            ads = show_ads_shoes(data[1])
+            for ad in ads:
+                photo = open(ad[4], 'rb')
+                await bot.send_photo(msg.from_user.id, photo,
+                                     caption=f"{ad[0]}\n\n{ad[2]}\n\nРазмер: {ad[1]}\n\nДля покупки: {ad[3]}")
+
     elif msg.text == "🔙 Назад":
         await bot.send_message(msg.from_user.id, "Вернемся к выбору категории", reply_markup=mainboard)
     elif msg.text == "🔙 Выход":
@@ -148,6 +337,19 @@ async def echo_message(msg: types.Message):
         if is_admin(msg.from_user.id):
             await bot.send_message(msg.from_user.id, "Введите название товара")
             await NewShoes.get_title.set()
+        else:
+            await bot.send_message(msg.from_user.id, "Извините, вы не админ")
+    elif msg.text == '🗑 Удалить объявление 🗑':
+        if is_admin(msg.from_user.id):
+            await bot.send_message(msg.from_user.id, "Введите название товара")
+            await DeleteAd.get_title.set()
+        else:
+            await bot.send_message(msg.from_user.id, "Извините, вы не админ")
+    elif msg.text == 'Статистика':
+        if is_admin(msg.from_user.id):
+            await bot.send_document(msg.from_user.id, open("Статистика.txt", 'rb'))
+            with open("Статистика.txt", 'w') as f:
+                f.write("")
         else:
             await bot.send_message(msg.from_user.id, "Извините, вы не админ")
 
@@ -226,6 +428,14 @@ async def image2(message: types.Message, state: FSMContext):
     await state.finish()
     new_shoes(data['title'], data['size'], data['description'], data['contacts'], f'images/{photo_name}.jpg')
     await bot.send_message(message.from_user.id, "Объявление успешно создано")
+
+
+@dp.message_handler(state=DeleteAd.get_title)
+async def delete_ad_admin(message: types.Message, state: FSMContext):
+    ad_title = message.text
+    delete_ad(ad_title)
+    await bot.send_message(message.from_user.id, "Объявление удалено")
+    await state.finish()
 
 
 if __name__ == '__main__':

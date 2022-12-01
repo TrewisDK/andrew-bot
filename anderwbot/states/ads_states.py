@@ -15,3 +15,7 @@ class NewShoes(StatesGroup):
     get_contacts = State()
     get_size = State()
     get_image = State()
+    
+
+class DeleteAd(StatesGroup):
+    get_title = State()

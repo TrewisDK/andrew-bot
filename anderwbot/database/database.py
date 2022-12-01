@@ -84,3 +84,14 @@ def get_user_data(user_id):
     data = sql.fetchone()
     db.close()
     return data
+
+
+def delete_ad(title):
+    db = sqlite3.connect('database/ads.db')
+    sql = db.cursor()
+    try:
+        sql.execute("DELETE FROM ads_clothes WHERE title = (?)", (title,))
+    except Exception as e:
+        sql.execute("DELETE FROM ads_shoes WHERE title = (?)", (title,))
+    db.commit()
+    db.close()
