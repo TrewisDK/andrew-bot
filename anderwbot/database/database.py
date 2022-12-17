@@ -1,4 +1,5 @@
 import sqlite3
+import json
 
 
 def user(user_id):
@@ -62,19 +63,33 @@ def new_shoes(title, size, description, contacts, image):
 def show_ads_clothes(size):
     db = sqlite3.connect('database/ads.db')
     sql = db.cursor()
-    sql.execute("SELECT title, size, description, contacts, image FROM ads_clothes WHERE size = (?)", (size,))
+    sql.execute("SELECT title, size, description, contacts, image FROM ads_clothes")
     data = sql.fetchall()
+    new_data = []
+    for i in data:
+        size1 = i[1]
+        size1 = size1.split(",")
+        if size in size1:
+            new_data.append(i)
+
     db.close()
-    return data
+    return new_data
 
 
 def show_ads_shoes(size):
     db = sqlite3.connect('database/ads.db')
     sql = db.cursor()
-    sql.execute("SELECT title, size, description, contacts, image FROM ads_shoes WHERE size = (?)", (size,))
+    sql.execute("SELECT title, size, description, contacts, image FROM ads_shoes")
     data = sql.fetchall()
+    new_data = []
+    for i in data:
+        size1 = i[1]
+        size1 = size1.split(",")
+        if str(size) in size1:
+            new_data.append(i)
     db.close()
-    return data
+    print(new_data)
+    return new_data
 
 
 def get_user_data(user_id):
@@ -89,9 +104,23 @@ def get_user_data(user_id):
 def delete_ad(title):
     db = sqlite3.connect('database/ads.db')
     sql = db.cursor()
-    try:
-        sql.execute("DELETE FROM ads_clothes WHERE title = (?)", (title,))
-    except Exception as e:
-        sql.execute("DELETE FROM ads_shoes WHERE title = (?)", (title,))
+    if title[1] == "одежда":
+        sql.execute("DELETE FROM ads_clothes WHERE title = (?)", (title[0],))
+        print("ok")
+    else:
+        sql.execute("DELETE FROM ads_shoes WHERE title = (?)", (title[0],))
+    db.commit()
+    db.close()
+
+
+def edit_ad(title, size):
+    db = sqlite3.connect('database/ads.db')
+    sql = db.cursor()
+    title = title.split("|")
+    if title[1] == "одежда":
+        sql.execute("UPDATE ads_clothes SET size = (?) WHERE title = (?)", (size, title[0]))
+        print("ok")
+    else:
+        sql.execute("UPDATE ads_shoes SET size = (?) WHERE title = (?)", (size, title[0]))
     db.commit()
     db.close()
